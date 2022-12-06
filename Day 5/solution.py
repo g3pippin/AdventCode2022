@@ -4,29 +4,30 @@ test = False
 
 if test:
     file_string = "test.txt"
+    # CMZ
+    # MCD
 else:
     file_string = "puzzle.txt"
+    # VJSFHWGFT
+    # LCTQFBVZV
 
-input_file = open(file_string, "r")
-input_string = input_file.read()
-input_file.close()
+with open(file_string, "r") as input_string:
+    map_input, moves_list = map(lambda x: x.splitlines(), input_string.read().split("\n\n"))
 
-map_input, moves_list = map(lambda x: x.splitlines(True), input_string.split("\n\n"))
-map_list = [list(line[i:i + 4].strip() for i in range(0, len(line) + 1, 4)) for line in map_input]
-stacks_part1 = [[cell.strip() for cell in row if cell.strip()] for row in list(zip(*reversed(map_list)))]
-stacks_part2 = stacks_part1
+# Split map into chunks of 4 to capture column value
+map_list = [[line[i:i + 4].strip().replace("[", "").replace("]", "") for i in range(0, len(line) + 1, 4)] for line in map_input]
 
-# Part 1 Solution
-for move in moves_list:
-    num, source, dest = map(int, parse("move {} from {} to {}", move).fixed)
-    for x in range(num):
-        stacks_part1[dest - 1].append(stacks_part1[source - 1].pop())
-print( "PART 1:", ''.join(stack[-1] for stack in stacks_part1).replace("[", "").replace("]", "") )
+# Reverse, transpose and strip whitespace of map; shoutout to reddit for assistance
+stack1 = [[cell.strip() for cell in row if cell.strip()] for row in list(zip(*reversed(map_list)))]
+stack2 = [[cell.strip() for cell in row if cell.strip()] for row in list(zip(*reversed(map_list)))]
+stack2_test = [[cell.strip() for cell in row if cell.strip()] for row in list(zip(*reversed(map_list)))]
 
-# Part 2 Solution
-for move in moves_list:
-    num, source, dest = map(int, parse("move {} from {} to {}", move).fixed)
-    source_stack_after, stack_moving = stacks_part2[source - 1][:-num], stacks_part2[source - 1][-num:]
-    stacks_part2[source - 1] = source_stack_after
-    stacks_part2[dest - 1].extend(stack_moving)
-print( "PART 2:", ''.join(stack[-1] for stack in stacks_part2).replace("[", "").replace("]", "") )
+moves = [[x, y, z] for x, y, z in [parse("move {:d} from {:d} to {:d}", move) for move in moves_list]]
+
+[[stack1[t-1].append(stack1[f-1].pop()) for x in range(m)] for m, f, t in moves]
+print("P1:", ''.join(s.pop() for s in stack1) )
+
+for m, f, t in moves:
+    stack2[t-1].extend(stack2[f-1][-m:])
+    stack2[f-1] = stack2[f-1][:-m]
+print( "P2:", ''.join(s[-1] for s in stack2) )

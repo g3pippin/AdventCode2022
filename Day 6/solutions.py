@@ -3,11 +3,11 @@ test = False
 if test:
     file_string = "test.txt"
     # Part 1 = 7
-    # Part  = 
+    # Part 2 = 19
 else:
     file_string = "puzzle.txt"
     # Part 1 = 1920
-    # Part  = 
+    # Part 2 = 2334
 
 with open(file_string, "r") as input_string:
     buffer = input_string.read()

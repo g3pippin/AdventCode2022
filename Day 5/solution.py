@@ -20,7 +20,6 @@ map_list = [[line[i:i + 4].strip().replace("[", "").replace("]", "") for i in ra
 # Reverse, transpose and strip whitespace of map; shoutout to reddit for assistance
 stack1 = [[cell.strip() for cell in row if cell.strip()] for row in list(zip(*reversed(map_list)))]
 stack2 = [[cell.strip() for cell in row if cell.strip()] for row in list(zip(*reversed(map_list)))]
-stack2_test = [[cell.strip() for cell in row if cell.strip()] for row in list(zip(*reversed(map_list)))]
 
 moves = [[x, y, z] for x, y, z in [parse("move {:d} from {:d} to {:d}", move) for move in moves_list]]
 

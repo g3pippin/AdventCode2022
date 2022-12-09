@@ -5,8 +5,8 @@ file_string = "test2.txt" if test else "puzzle.txt"
 
 def layout(track, visit):
     grid = 50
-    check_row = ''.join(['.' for a in range(-grid, grid)])
-    last_row = ''
+    
+    print(''.join(['.' for a in range(-grid, grid)]))
     for r in range(-grid, grid):
         layout_row = ''
         for c in range(-grid, grid):
@@ -18,9 +18,9 @@ def layout(track, visit):
                 layout_row += '#'
             else:
                 layout_row += '.'
-        if check_row != last_row != layout_row:
+        if '#' in list(layout_row):
             print(layout_row)
-        last_row = layout_row
+    print(''.join(['.' for a in range(-grid, grid)]))
 
 
 def check_rope(check):

@@ -18,7 +18,7 @@ def layout(track, visit):
                 layout_row += '#'
             else:
                 layout_row += '.'
-        if '#' in list(layout_row):
+        if '#' in list(layout_row) or 's' in list(layout_row):
             print(layout_row)
     print(''.join(['.' for a in range(-grid, grid)]))
 
@@ -62,11 +62,11 @@ def check_rope(check):
     return check
 
 
-def get_locations(input, rope_length, print):
+def get_locations(data_input, rope_length, print_layout):
     rope = [[0,0] for x in range(0, rope_length)]
     locations = [[0,0]]
 
-    for d, m in [line.split(" ") for line in input]:
+    for d, m in [line.split(" ") for line in data_input]:
         for x in range(int(m)):
             if d == 'R':
                 rope[0][1] += 1
@@ -80,7 +80,7 @@ def get_locations(input, rope_length, print):
             rope = check_rope(rope)
             if rope[rope_length-1] not in locations:
                 locations.append([rope[rope_length-1][0], rope[rope_length-1][1]])
-    if print:
+    if print_layout:
         layout(rope, locations)
     return len(locations)
 
@@ -88,9 +88,7 @@ def get_locations(input, rope_length, print):
 with open(file_string, "r") as input_string:
     data = input_string.read().splitlines()
 
-    # Change boolean for picture of travel
-    rope_2 = get_locations(data, 2, True)
-    rope_10 = get_locations(data, 10, True)
-
-    print(f'The rope with length {2} visited {rope_2} locations') # 6494
-    print(f'The rope with length {10} visited {rope_10} locations') # 2691
+    for length in [2, 5, 10, 15]:
+        # Change boolean for picture of travel
+        results = get_locations(data, length, True)
+        print(f'The rope with length {length} visited {results} locations')

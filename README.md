@@ -10,5 +10,5 @@ Also spent some time cleaning up the repo.
 Knocked out day 6 and pushed all missing updates. \
 I felt inspired over the weekend and rewrote some previous solutions. \
 Day 5 especially looks cleaner using some ideas I saw on reddit.
-### 20221202
+#### 20221202
 First time trying advent of code, hoping to learn some new tricks and work on git and python skills.

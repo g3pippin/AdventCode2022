@@ -5,6 +5,8 @@ file_string = "test2.txt" if test else "puzzle.txt"
 
 def layout(track, visit):
     grid = 50
+    check_row = ''.join(['.' for a in range(-grid, grid)])
+    last_row = ''
     for r in range(-grid, grid):
         layout_row = ''
         for c in range(-grid, grid):
@@ -16,7 +18,9 @@ def layout(track, visit):
                 layout_row += '#'
             else:
                 layout_row += '.'
-        print(layout_row)
+        if check_row != last_row != layout_row:
+            print(layout_row)
+        last_row = layout_row
 
 
 def check_rope(check):
@@ -85,8 +89,8 @@ with open(file_string, "r") as input_string:
     data = input_string.read().splitlines()
 
     # Change boolean for picture of travel
-    rope_2 = get_locations(data, 2, False)
-    rope_10 = get_locations(data, 10, False)
+    rope_2 = get_locations(data, 2, True)
+    rope_10 = get_locations(data, 10, True)
 
     print(f'The rope with length {2} visited {rope_2} locations') # 6494
     print(f'The rope with length {10} visited {rope_10} locations') # 2691

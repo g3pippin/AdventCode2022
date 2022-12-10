@@ -80,7 +80,7 @@ def get_locations(data_input, rope_length, print_layout):
 
 with open(file_string, "r") as input_string:
     data = input_string.read().splitlines()
-    for length in [2, 5, 10, 15]:
+    for length in [2, 10, 20]:
         # Change boolean for picture of travel
         results = get_locations(data, length, True)
         print(f'The rope with length {length} visited {results} locations')

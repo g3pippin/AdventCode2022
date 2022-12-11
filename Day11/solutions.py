@@ -2,50 +2,52 @@ from parse import *
 import math
 
 
-def init_monkeys(data):
-    data_set = {}
-    for line in [i.splitlines() for i in data]:
-        num = parse('Monkey {:d}:', line[0].strip())[0]
-        data_set[num] = {'inspect': 0, 'items':[], 'op': '', 'opval': 0, 'test': 0, 'true': 0, 'false': 0}
-        
-        data_set[num]['items'] = [int(l) for l in line[1][line[1].find(':') + 1:].strip().split(", ")]
-        data_set[num]['op'], data_set[num]['opval'] = list(parse('Operation: new = old {} {}', line[2].strip()))
-        data_set[num]['test'] = parse('Test: divisible by {:d}', line[3].strip())[0]
-        data_set[num]['true'] = parse('If true: throw to monkey {:d}', line[4].strip())[0]
-        data_set[num]['false'] = parse('If false: throw to monkey {:d}', line[5].strip())[0]
-    return data_set
-    
+class Monkey:
+    def __init__(self, items, operation, value, divisible, true, false):
+        self.inspections = 0
+        self.items = items
+        self.op = operation
+        self.opval = value
+        self.div = divisible
+        self.true = true
+        self.false = false
 
-def inspect_worry(item_worry, monkey_operation, operation_value, modifier):
-    update = item_worry if operation_value == 'old' else int(operation_value)
-    if monkey_operation == "+":
-        item_worry = item_worry + update
-    elif monkey_operation == "*":
-        item_worry = item_worry * update
-    item_worry = item_worry % modifier
-    return item_worry
-
-
-def print_output(data):
-    top = [v for v in sorted([data[k]['inspect'] for k in data.keys()])]
-    print(f"Generated Answer {top[-2] * top[-1]}")
+    def process_item(self, f, bored):
+        self.inspections += 1
+        update = self.items[0] if self.opval == 'old' else int(self.opval)
+        if self.op == '+':
+            self.items[0] = self.items[0] + update
+        elif self.op == '*':
+            self.items[0] = self.items[0] * update
+        self.items[0] = math.floor(self.items[0] / 3) if bored else self.items[0] % f
+        return self.true if self.items[0] % self.div == 0 else self.false
 
 
 test = False
 file_string = "test.txt" if test else "puzzle.txt"
-
 with open(file_string, "r") as input_string:
-    input_data = input_string.read().split("\n\n")
+    data = input_string.read().split("\n\n")
 
-monkeys = init_monkeys(input_data).copy()
-mod = math.prod([monkeys[m]['test'] for m in monkeys])
+monkeys = []
+for line in [i.splitlines() for i in data]:
+    operation, value = list(parse('Operation: new = old {} {}', line[2].strip()))
+    monkeys.append(Monkey(
+        [int(l) for l in line[1][line[1].find(':') + 1:].strip().split(", ")],
+        operation,
+        value,
+        parse('Test: divisible by {:d}', line[3].strip())[0],
+        parse('If true: throw to monkey {:d}', line[4].strip())[0],
+        parse('If false: throw to monkey {:d}', line[5].strip())[0]
+    ))
+factor = math.prod([m.div for m in monkeys])
 
-for _ in range(10000):
-    for m in monkeys:
-        for item in monkeys[m]['items']:
-            monkeys[m]['inspect'] += 1
-            item = inspect_worry(item, monkeys[m]['op'], monkeys[m]['opval'], mod)
-            next_monkey = monkeys[m]['true'] if item % monkeys[m]['test'] == 0 else monkeys[m]['false']
-            monkeys[next_monkey]['items'] += [item]
-        monkeys[m]['items'] = []
-print_output(monkeys)
+boredom = False
+rounds = 20 if boredom else 10000
+for r in range(rounds):
+    for m in range(len(monkeys)):
+        for _ in range(len(monkeys[m].items)):
+            next_monkey = monkeys[m].process_item(factor, boredom)
+            monkeys[next_monkey].items.append(monkeys[m].items.pop(0))
+print(math.prod(sorted([monkeys[x].inspections for x in range(len(monkeys))], reverse=True)[:2]))
+# 10605 / 69918
+# 2713310158 / 19573408701
